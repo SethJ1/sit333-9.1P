@@ -9,6 +9,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import web.service.LoginService;
 import web.service.MathQuestionService;
+import web.service.DateUtilityService;
+import web.service.ScienceService;
 
 @Controller
 @RequestMapping("/")
@@ -124,12 +126,73 @@ public class RoutingServlet {
 
         RedirectView redirectView = null;
         if (calculatedResult == Double.valueOf(resultUser)) {
-            redirectView = new RedirectView("/q3", true);
-            redirectAttributes.addFlashAttribute("message", "Congratulations! You've completed all the questions!");
+            redirectView = new RedirectView("/date1", true);
         } else {
             redirectView = new RedirectView("/q3", true);
             redirectAttributes.addFlashAttribute("message", "Wrong answer, try again.");
         }        
+        return redirectView;
+    }
+
+    @GetMapping("/date1")
+    public String date1View() {        
+        System.out.println("date1 view...");
+        return "view-date1";
+    }
+
+    @PostMapping("/date1")
+    public RedirectView date1(
+            HttpServletRequest request, 
+            RedirectAttributes redirectAttributes) {
+        System.out.println("date1 form...");
+        String date = request.getParameter("date");
+
+        String calculatedDate = DateUtilityService.dateAfter(date);
+        System.out.println("Calculated Date: " + calculatedDate);
+
+        RedirectView redirectView = new RedirectView("/date2", true);
+        return redirectView;
+    }
+
+    @GetMapping("/date2")
+    public String date2View() {        
+        System.out.println("date2 view...");
+        return "view-date2";
+    }
+
+    @PostMapping("/date2")
+    public RedirectView date2(
+            HttpServletRequest request, 
+            RedirectAttributes redirectAttributes) {
+        System.out.println("date2 form...");
+        String date = request.getParameter("date");
+
+        String calculatedDate = DateUtilityService.dateBefore(date);
+        System.out.println("Calculated Date: " + calculatedDate);
+
+        RedirectView redirectView = new RedirectView("/science", true);
+        return redirectView;
+    }
+
+    @GetMapping("/science")
+    public String scienceView() {        
+        System.out.println("science view...");
+        return "view-science";
+    }
+
+    @PostMapping("/science")
+    public RedirectView science(
+            HttpServletRequest request, 
+            RedirectAttributes redirectAttributes) {
+        System.out.println("science form...");
+        String mass = request.getParameter("mass");
+        String acceleration = request.getParameter("acceleration");
+
+        double force = ScienceService.calculateForce(mass, acceleration);
+        System.out.println("Calculated Force: " + force);
+
+        RedirectView redirectView = new RedirectView("/science", true);
+        redirectAttributes.addFlashAttribute("message", "Science problem solved!");
         return redirectView;
     }
 }

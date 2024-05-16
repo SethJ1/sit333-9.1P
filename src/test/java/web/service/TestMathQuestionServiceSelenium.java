@@ -131,8 +131,7 @@ public class TestMathQuestionServiceSelenium {
         resultField.sendKeys("6");
         submitButton.click();
         
-        WebElement successMessage = driver.findElement(By.xpath("//div[contains(text(), 'Congratulations!')]"));
-        assertEquals("Congratulations! You've completed all the questions!", successMessage.getText());
+        assertEquals("http://localhost:8080/date1", driver.getCurrentUrl());
     }
 
     @Test
@@ -151,5 +150,49 @@ public class TestMathQuestionServiceSelenium {
         
         WebElement errorMessage = driver.findElement(By.xpath("//div[contains(text(), 'Wrong answer, try again.')]"));
         assertEquals("Wrong answer, try again.", errorMessage.getText());
+    }
+
+    @Test
+    public void testDateAfterCorrect() {
+        login();
+        
+        driver.get("http://localhost:8080/date1");
+        
+        WebElement dateField = driver.findElement(By.name("date"));
+        WebElement submitButton = driver.findElement(By.xpath("//input[@type='submit']"));
+        
+        dateField.sendKeys("2024-05-14");
+        submitButton.click();
+        
+        assertEquals("http://localhost:8080/date2", driver.getCurrentUrl());
+    }
+
+    @Test
+    public void testDateBeforeCorrect() {
+        testDateAfterCorrect();
+        
+        WebElement dateField = driver.findElement(By.name("date"));
+        WebElement submitButton = driver.findElement(By.xpath("//input[@type='submit']"));
+        
+        dateField.sendKeys("2024-05-14");
+        submitButton.click();
+        
+        assertEquals("http://localhost:8080/science", driver.getCurrentUrl());
+    }
+
+    @Test
+    public void testScienceCorrect() {
+        testDateBeforeCorrect();
+        
+        WebElement massField = driver.findElement(By.name("mass"));
+        WebElement accelerationField = driver.findElement(By.name("acceleration"));
+        WebElement submitButton = driver.findElement(By.xpath("//input[@type='submit']"));
+        
+        massField.sendKeys("4");
+        accelerationField.sendKeys("5");
+        submitButton.click();
+        
+        WebElement successMessage = driver.findElement(By.xpath("//div[contains(text(), 'Science problem solved!')]"));
+        assertEquals("Science problem solved!", successMessage.getText());
     }
 }
